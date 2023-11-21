@@ -1,0 +1,128 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="https://unpkg.com/vue@next"></script>
+</head>
+
+<body >
+<hr />
+<div id="main">
+<div id="list" v-if="UI=='main'">
+	<h1>Welcome</h1>
+	<button @click="setUI('cart')">購物車</button>
+	<table border=1>
+		<tr><td>商品名稱</td><td>商品介紹</td><td>價格</td><td>是否有客戶訂購</td><td>-</td></tr>
+		<tr v-for="good in dat" :key="good.id">
+			<td>{{good.name}}</td>
+			<td>{{good.description}}</td>
+			<td>{{good.price}}</td>
+			<td>{{good.remainder}}</td>
+			<td><button @click="addgood(good.id)">加入購物車</button></td>
+		</tr>
+	</table>
+</div>
+<div v-if="UI=='cart'">
+	<button @click="setUI('main')">回首頁</button>
+	<table border=1>
+		<tr><td>商品名稱</td><td>單價</td><td>商品數量</td><td>總價</td><td>-</td></tr>
+		<tr v-for="good in dat2" :key="good.id">
+			<td>{{good.goods}}</td>
+			<td>{{good.price}}</td>
+			<td>{{good.amount}}</td>
+			<td>{{good.total}}</td>
+			<td><button @click="delgood(good.id)">移出購物車</button></td>
+		</tr>
+	</table><br>
+</div>
+</div>
+<script>
+const shoppingApp= Vue.createApp({
+	data() {
+		return {
+			UI: 'main',
+			dat: [],
+			dat2: [],
+			shoppingcart: {
+				goodName: '',
+				goodPrice: '',
+				goodNum: ''
+			}
+		}
+	},
+	methods: {
+		loadItem: function () {
+			const that=this; //this  ==> stands for vm6. let's save `this` to `that`
+			fetch('shoppingControl.php?act=listitem')
+			.then(function(response) {
+				return response.json();
+			})
+			.then(function(myJson) {
+				//we are inside the callback function, now `this` means the function, not vm6
+				//we will use `that` to access vm6
+				that.dat = myJson;
+				//vm6.dat = myJson;
+			});
+		},
+		loadCart: function () {
+			const that=this; //this  ==> stands for vm6. let's save `this` to `that`
+			fetch('shoppingControl.php?act=listcart')
+			.then(function(response) {
+				return response.json();
+			})
+			.then(function(myJson) {
+				//we are inside the callback function, now `this` means the function, not vm6
+				//we will use `that` to access vm6
+				that.dat2 = myJson;
+				//vm6.dat = myJson;
+			});
+		},
+		delgood: function (id) {
+			const that=this;
+			let url="shoppingControl.php?act=delItem&id="+id;
+			fetch(url,{
+				method: 'POST'
+			})
+			.then(function(res){return res.text(); }) //取得傳回值，轉為文字
+			.then(function(data){
+				console.log(data);
+				that.loadCart();
+				that.loadItem();
+			})
+		},
+		addgood: function (id) {
+			const that=this; //this  ==> stands for vm6. let's save `this` to `that`
+			
+			var selectedGood = this.dat.find(good => good.id === id);// 找到特定id對應的商品數據
+
+				// 使用FormData對數據進行打包
+				var formData = new FormData();
+				formData.append('id', selectedGood.id);
+				formData.append('name', selectedGood.name);
+				formData.append('description', selectedGood.description);
+				formData.append('price', selectedGood.price);
+				formData.append('remainder', selectedGood.remainder);
+
+				// 發送 FormData 給後端
+				let url = "shoppingControl.php?act=addItem";
+
+				fetch(url, {
+					method: 'POST',
+					body: formData
+				})
+				.then(function(res){return res.text(); }) //取得傳回值，轉為文字
+				.then(function(data){
+					console.log(data);
+					that.loadCart();
+					that.loadItem();
+				})
+		},
+		setUI: function(page) {
+			this.UI=page;
+		}
+	},
+	created() {
+		this.loadItem();
+		this.loadCart();
+	}
+}).mount("#main");
+</script>
+</body></html>
