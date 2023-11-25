@@ -9,15 +9,14 @@
     <hr />
     <div id="main">
         <div id="list" v-if="UI=='main'">
-            <h1>This is the main page.</h1>
+            <h1>商家</h1>
             <button @click="setAddUI()">Load Add Form</button>
             <table border=1>
                 <tr>
                     <td>序號</td>
-                    <td>工作名稱</td>
-                    <td>緊急程度</td>
-                    <td>內容說明</td>
-                    <td>狀態</td>
+                    <td>商品名稱</td>
+                    <td>價格</td>
+                    <td>商品介紹</td>
                     <td>-</td>
                 </tr>
                 <tr v-for="job in dat">
@@ -25,7 +24,6 @@
                     <td>{{job.name}}</td>
                     <td>{{job.price}}</td>
                     <td>{{job.description}}</td>
-                    <td>{{job.status}}</td>
                     <td><button @click="delJob(job.id)">刪</button><button @click="setEditUI(job)">改</button></td>
                 </tr>
             </table>
