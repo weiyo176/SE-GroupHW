@@ -59,7 +59,27 @@ function addItem($id,$name,$price) {
     return True;
 }
 
+function minusItem($id,$ifplus) {
+	global $db;
 
+	$sql = "select * from customer where id= $id;";
+    $stmt = mysqli_prepare($db, $sql); //prepare sql statement
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt); //取得查詢結果
+	$row=mysqli_fetch_assoc($result);
+	if ($row && $ifplus) 
+        $newAmount = $row['amount'] + 1;
+	else 
+		$newAmount = $row['amount'] - 1;
+	if ($newAmount >= 0){
+		$newTotal = $newAmount * $row['price'];
+		$updateSql = "UPDATE customer SET amount = ?, total = ? WHERE id = ?";
+		$updateStmt = mysqli_prepare($db, $updateSql);
+		mysqli_stmt_bind_param($updateStmt, "iii", $newAmount, $newTotal, $id);
+		mysqli_stmt_execute($updateStmt);
+	}
+	return True;
+}
 function delItem($id) {
 	global $db;
 

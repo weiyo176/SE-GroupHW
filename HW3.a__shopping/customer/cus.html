@@ -42,7 +42,7 @@
 						<td>{{good.price}}</td>
 						<td>{{good.amount}}</td>
 						<td>{{good.total}}</td>
-						<td><button @click="delgood(good.id)">移出購物車</button></td>
+						<td><button @click="minusgood(good.id)">-</button><button @click="plusgood(good.id)">+</button><button @click="delgood(good.id)">移出購物車</button></td>
 					</template>
 					<template v-if="index == dat2.length-1 ">
 						<td></td>
@@ -95,6 +95,32 @@
 							that.dat2 = myJson;
 							//vm6.dat = myJson;
 						});
+				},
+				minusgood: function (id) {
+					const that = this;
+					let url = "shoppingControl.php?act=minusItem&ifplus="+0+"&id=" + id;
+					fetch(url, {
+						method: 'POST'
+					})
+						.then(function (res) { return res.text(); }) //取得傳回值，轉為文字
+						.then(function (data) {
+							console.log(data);
+							that.loadCart();
+							that.loadItem();
+						})
+				},
+				plusgood: function (id) {
+					const that = this;
+					let url = "shoppingControl.php?act=minusItem&ifplus="+1+"&id=" + id;
+					fetch(url, {
+						method: 'POST'
+					})
+						.then(function (res) { return res.text(); }) //取得傳回值，轉為文字
+						.then(function (data) {
+							console.log(data);
+							that.loadCart();
+							that.loadItem();
+						})
 				},
 				delgood: function (id) {
 					const that = this;

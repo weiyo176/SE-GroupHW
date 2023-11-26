@@ -18,6 +18,12 @@ case "addItem":
     // 驗證步驟...
     addItem($id, $name, $price);
     return;
+    case "minusItem":
+      $id=(int)$_REQUEST['id']; //$_GET, $_REQUEST
+      $ifplus=(int)$_REQUEST['ifplus'];
+      //verify
+      minusItem($id,$ifplus);
+      return;
 case "delItem":
 	$id=(int)$_REQUEST['id']; //$_GET, $_REQUEST
 	//verify
