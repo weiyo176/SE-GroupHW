@@ -36,12 +36,21 @@
 					<td>總價</td>
 					<td>-</td>
 				</tr>
-				<tr v-for="good in dat2" :key="good.id">
-					<td>{{good.goods}}</td>
-					<td>{{good.price}}</td>
-					<td>{{good.amount}}</td>
-					<td>{{good.total}}</td>
-					<td><button @click="delgood(good.id)">移出購物車</button></td>
+				<tr v-for="(good, index) in dat2" :key="good.id">
+					<template v-if="index !== dat2.length - 1">
+						<td>{{good.goods}}</td>
+						<td>{{good.price}}</td>
+						<td>{{good.amount}}</td>
+						<td>{{good.total}}</td>
+						<td><button @click="delgood(good.id)">移出購物車</button></td>
+					</template>
+					<template v-if="index == dat2.length-1 ">
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>{{good.goods}}</td>
+						<td>{{good.total}}</td>
+					</template>
 				</tr>
 			</table><br>
 		</div>
