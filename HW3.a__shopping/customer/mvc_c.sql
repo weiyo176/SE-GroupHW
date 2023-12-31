@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2023-12-29 19:27:27
+-- 產生時間： 2023-12-31 03:43:09
 -- 伺服器版本： 10.4.28-MariaDB
 -- PHP 版本： 8.2.4
 
@@ -48,6 +48,7 @@ INSERT INTO `business` (`bIID`, `name`, `email`, `password`) VALUES
 --
 
 CREATE TABLE `customer` (
+  `gID` int(11) NOT NULL,
   `cID` int(11) NOT NULL,
   `id` int(11) NOT NULL,
   `oID` int(11) NOT NULL,
@@ -58,6 +59,14 @@ CREATE TABLE `customer` (
   `status` varchar(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '未處理',
   `rating` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- 傾印資料表的資料 `customer`
+--
+
+INSERT INTO `customer` (`gID`, `cID`, `id`, `oID`, `goods`, `price`, `amount`, `total`, `status`, `rating`) VALUES
+(2, 1, 1, 0, 'apple', 10, 1, 10, '未處理', 0),
+(3, 1, 2, 0, 'banana', 20, 2, 40, '未處理', 0);
 
 -- --------------------------------------------------------
 
@@ -108,7 +117,7 @@ ALTER TABLE `business`
 -- 資料表索引 `customer`
 --
 ALTER TABLE `customer`
-  ADD PRIMARY KEY (`cID`);
+  ADD PRIMARY KEY (`gID`);
 
 --
 -- 資料表索引 `customers`
@@ -136,7 +145,7 @@ ALTER TABLE `business`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `cID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `gID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `customers`

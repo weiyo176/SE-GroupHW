@@ -36,7 +36,7 @@ function getCartList() {
 
 function addItem($id,$name,$price) {
     global $db;
-    $sql = "select * from customer where id= $id;";
+    $sql = "select * from customer where id= $id && cID = 1;";
     $stmt = mysqli_prepare($db, $sql); //prepare sql statement
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt); //取得查詢結果
@@ -51,9 +51,10 @@ function addItem($id,$name,$price) {
     }
     else {
 		$amount=1;
-		$sql = "insert into customer (id, goods, price, amount, total) values (?, ?, ?, ?, ?)"; //SQL中的 ? 代表未來要用變數綁定進去的地方
+		$cID=1;
+		$sql = "insert into customer (cID,id, goods, price, amount, total) values (?, ?, ?, ?, ?, ?)"; //SQL中的 ? 代表未來要用變數綁定進去的地方
 		$stmt = mysqli_prepare($db, $sql); //prepare sql statement
-		mysqli_stmt_bind_param($stmt, "isiii",$id,$name,$price,$amount,$price); //bind parameters with variables, with types "sss":string, string ,string
+		mysqli_stmt_bind_param($stmt, "iisiii",$cID,$id,$name,$price,$amount,$price); //bind parameters with variables, with types "sss":string, string ,string
 		mysqli_stmt_execute($stmt);  //執行SQL
     }
     return True;
