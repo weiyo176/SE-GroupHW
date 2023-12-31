@@ -1,0 +1,101 @@
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type="text/javascript" src="https://unpkg.com/vue@next"></script>
+</head>
+
+<body>
+    <hr />
+    <div id="main">
+        <div id="list" v-if="UI=='main'">
+            <h1>物流</h1>
+            <h2>訂單</h2>
+            <table border=1>
+                <tr>
+                    <td>訂單編號</td>
+                    <td>商品序號</td>
+                    <td>商品名稱</td>
+                    <td>數量</td>
+                    <td>總價</td>
+                    <td>訂單狀態</td>
+                    <td>-</td>
+                </tr>
+                <tr v-for="(job, index) in order">
+                    <td>{{job.oID}}</td>
+                    <td>{{job.id}}</td>
+                    <td>{{job.goods}}</td>
+                    <td>{{job.amount}}</td>
+                    <td>{{job.total}}</td>
+                    <td>{{job.status}}</td>
+                    <td>
+                        <button v-if="(index < order.length - 1 && job.oID !== order[index + 1].oID) || index == order.length - 1" @click="checkStatus(job.oID)">額外按鈕</button>
+                    </td>
+                </tr>
+                </tr>
+            </table>
+        </div>
+        <div v-if="UI=='editForm'">
+            商品名稱: <input type="text" v-model="newJob.name" /> <br />
+
+            價錢: <input type="text" v-model="newJob.price" /> <br />
+
+            商品說明: <textarea v-model="newJob.description"></textarea><br>
+
+            <input type='button' @click="addJob()" value="save">
+        </div>
+    </div>
+
+    <script>
+        const shoppingApp = Vue.createApp({
+            data() {
+                return {
+                    UI: 'main',
+                    dat: [],
+                    order: [],
+                    newJob: {
+                        id: -1,
+                        name: '',
+                        price: '',
+                        description: ''
+                    }
+                }
+            },
+            methods: {
+                orderList: function () {
+                    const that = this; //this  ==> stands for vm6. let's save `this` to `that`
+                    fetch('shoppingControl.php?act=orderList&rule=2')
+                        .then(function (response) {
+                            return response.json();
+                        })
+                        .then(function (myJson) {
+                            //we are inside the callback function, now `this` means the function, not vm6
+                            //we will use `that` to access vm6
+
+                            that.order = myJson;
+                            //shoppingApp.dat = myJson;
+                        });
+                },
+                checkStatus: function (oID) {
+                    const that = this;
+                    let url = "shoppingControl.php?act=checkStatus&id=" + oID+"&rule=" + 2;
+                    fetch(url, {
+                        method: 'POST'
+                    })
+                        .then(function (res) { 
+                            return res.text(); 
+                        }) //取得傳回值，轉為文字
+                        .then(function (data) {
+                            console.log(data);
+                            that.orderList();
+                        })
+                },
+            },
+            created() {
+                this.orderList();
+            }
+        }).mount("#main");
+    </script>
+</body>
+
+</html>
