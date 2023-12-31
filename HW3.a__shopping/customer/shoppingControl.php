@@ -3,6 +3,16 @@ require('shoppingModel.php');
 
 $act=$_REQUEST['act'];
 switch ($act) {
+  case "checkStatus":
+    $id=(int)$_REQUEST['id'];
+    $rule=(int)$_REQUEST['rule'];
+    checkStatus($id,$rule);
+    return;
+  case "orderList":
+    $rule=(int)$_REQUEST['rule'];
+    $items=getOrderList($rule);
+    echo json_encode($items);
+    return;  
 case "listitem":
   $items=getItemList();
   echo json_encode($items);

@@ -1,13 +1,69 @@
 <?php
 require('dbconfig.php');
 
+function checkStatus($oID,$rule) {
+	global $db;
+	//if rule=1, select all status=未處理 or status=處理中
+	if ($rule == 1)
+		$sql = "select * from customer where oID=$oID && (status = \"未處理\" or status = \"處理中\");";
+	//if rule=2, select all status=處理中
+	else if ($rule == 2)
+		$sql = "select * from customer where oID=$oID && status = \"寄送中\";";
+	$stmt = mysqli_prepare($db, $sql ); //precompile sql指令，建立statement 物件，以便執行SQL
+	mysqli_stmt_execute($stmt); //執行SQL
+	$result = mysqli_stmt_get_result($stmt); //取得查詢結果
+	$status = "處理中";
+	$status2 = "寄送中";
+	$status3 = "已寄送";
+	// 如果status是未處理將資料庫update成處理中，如果是處理中則設成寄送中
+	while($r = mysqli_fetch_assoc($result)) {
+		if ($r['status'] == "未處理") {
+			$updateSql = "UPDATE customer SET status = ? WHERE gID = ?";
+			$updateStmt = mysqli_prepare($db, $updateSql);
+			mysqli_stmt_bind_param($updateStmt, "si", $status, $r['gID']);
+			mysqli_stmt_execute($updateStmt);
+		}
+		else if ($r['status'] == "處理中") {
+			$updateSql = "UPDATE customer SET status = ? WHERE gID = ?";
+			$updateStmt = mysqli_prepare($db, $updateSql);
+			mysqli_stmt_bind_param($updateStmt, "si", $status2, $r['gID']);
+			mysqli_stmt_execute($updateStmt);
+		}
+		else if ($r['status'] == "寄送中") {
+			$updateSql = "UPDATE customer SET status = ? WHERE gID = ?";
+			$updateStmt = mysqli_prepare($db, $updateSql);
+			mysqli_stmt_bind_param($updateStmt, "si", $status3, $r['gID']);
+			mysqli_stmt_execute($updateStmt);
+		}
+	}
+	// while($r = mysqli_fetch_assoc($result)) {
+	// 	$rows[] = $r; //將此筆資料新增到陣列中
+	// }
+	return true;
+}
+function getOrderList($rule) {
+	global $db;
+	if ($rule == 1)
+		$sql = "select * from customer where status = \"未處理\" or status = \"處理中\";";
+	else if ($rule == 2)
+		$sql = "select * from customer where status = \"寄送中\";";
+	// $sql = "select * from customer where status = \"未處理\" or status = \"處理中\";";
+	$stmt = mysqli_prepare($db, $sql ); //precompile sql指令，建立statement 物件，以便執行SQL
+	mysqli_stmt_execute($stmt); //執行SQL
+	$result = mysqli_stmt_get_result($stmt); //取得查詢結果
+
+	$rows = array(); //要回傳的陣列
+	while($r = mysqli_fetch_assoc($result)) {
+		$rows[] = $r; //將此筆資料新增到陣列中
+	}
+	return $rows;
+}
 function getItemList() {
 	global $db;
 	$sql = "select * from items;";
 	$stmt = mysqli_prepare($db, $sql ); //precompile sql指令，建立statement 物件，以便執行SQL
 	mysqli_stmt_execute($stmt); //執行SQL
 	$result = mysqli_stmt_get_result($stmt); //取得查詢結果
-
 	$rows = array(); //要回傳的陣列
 	while($r = mysqli_fetch_assoc($result)) {
 		$rows[] = $r; //將此筆資料新增到陣列中
