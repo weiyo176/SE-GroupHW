@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>會員註冊</title>
+<style type="text/css">
+body {
+  background-color: #f2f2f2;
+}
+
+#cont {
+  width: 400px;
+  margin: 100px auto;
+  border-radius: 10px;
+  background-color: #fff;
+  padding: 40px;
+  color: #333;
+  font-size: 16px;
+  font-family: Arial, sans-serif;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+form label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+form label span {
+  width: 100px;
+  text-align: right;
+  margin-right: 10px;
+}
+
+input {
+  width: 100%;
+  height: 40px;
+  padding: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+button {
+  display: inline-block;
+  height: 40px;
+  padding: 8px 16px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #fff;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+input[type="submit"],
+input[type="reset"] {
+  width: auto;
+  margin-right: 10px;
+  background-color: #4CAF50;
+}
+
+input[type="submit"]:hover,
+input[type="reset"]:hover {
+  background-color: #45a049;
+}
+
+.error {
+  color: red;
+  margin-top: 5px;
+}
+
+</style>
+<script>
+function togglePasswordVisibility() {
+  var passwordField = document.getElementById("password");
+  var toggleButton = document.getElementById("passwordToggle");
+  
+  if (passwordField.type === "password") {
+    passwordField.type = "text";
+    toggleButton.textContent = "隱藏密碼";
+  } else {
+    passwordField.type = "password";
+    toggleButton.textContent = "顯示密碼";
+  }
+}
+</script>
+</head>
+<body>
+<div id="cont">
+  <h2>會員註冊</h2>
+  <form action="register.php" method="post">
+    <label>
+      <span>帳號：</span>
+      <input type="email" name="username" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" required>
+    </label>
+    <label>
+      <span>密碼：</span>
+      <input type="password" name="password" id="password" required>
+      <button type="button" id="passwordToggle" onclick="togglePasswordVisibility()">顯示密碼</button>
+    </label>
+    <label>
+      <span>確認密碼：</span>
+      <input type="password" name="confirm_password" required>
+    </label>
+    <label>
+      <span>興趣：</span>
+      <input type="text" name="interest" required>
+    </label>
+    <label>
+      <span>專長：</span>
+      <input type="text" name="expertise" required>
+    </label>
+    <div style="text-align: center;">
+      <button type="submit">註冊</button>
+      <button type="reset">重設</button>
+    </div>
+  </form>
+</div>
+</body>
+</html>
