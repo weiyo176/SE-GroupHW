@@ -31,7 +31,7 @@ if ($password !== $confirm_password) {
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
         $insert_sql = "INSERT INTO customers (email, password, name ) VALUES ('$email', '$hashed_password', '$name')";
 
-        if ($conn->query($insert_sql) === TRUE) {
+        if ($conn->query($insert_sql) == TRUE) {
             echo "<script>alert('註冊成功');</script>";
         } else {
             echo "<script>alert('註冊失敗');</script>";

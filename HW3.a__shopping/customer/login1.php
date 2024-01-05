@@ -78,8 +78,8 @@ input[type="reset"]:hover {
 <div id="cont">
   <h2>會員登入</h2>
   <form action="login.php" method="post">
-    <label for="username">帳號:</label>
-    <input type="text" name="username" id="username" required>
+    <label for="email">帳號:</label>
+    <input type="text" name="email" id="email" required>
     <br>
     <label for="password">密碼：</label>
     <input type="password" name="password" id="password" required>

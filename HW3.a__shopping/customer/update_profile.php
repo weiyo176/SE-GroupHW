@@ -11,9 +11,8 @@ if (!isset($_SESSION['email'])) {
 $email = $_SESSION['email'];
 
 // 獲取表單提交的資料
-$username = $_POST['username'];
+$name = $_POST['name'];
 $new_email = $_POST['new_email'];
-
 // 建立資料庫連接
 $servername = "localhost";
 $username_db = "root";
@@ -39,11 +38,8 @@ if (!empty($new_email)) {
     }
 
     // 更新帳號及其他資料
-    $update_sql = "UPDATE customers SET email = '$new_email', username = '$username' WHERE email = '$email'";
-} else {
-    // 只更新興趣和專長，不更新帳號
-    $update_sql = "UPDATE customers SET username = '$username',  = '$' WHERE email = '$email'";
-}
+    $update_sql = "UPDATE customers SET email = '$new_email', name = '$name' WHERE email = '$email'";
+} 
 
 if ($conn->query($update_sql) === TRUE) {
     // 資料更新成功

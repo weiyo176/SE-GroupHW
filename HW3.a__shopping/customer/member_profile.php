@@ -2,13 +2,13 @@
 session_start();
 
 // 檢查會員是否已登入
-if (!isset($_SESSION['username'])) {
+if (!isset($_SESSION['email'])) {
     header("Location: login1.php");
     exit();
 }
 
 // 取得會員資料
-$username = $_SESSION['username'];
+$email = $_SESSION['email'];
 
 // 建立資料庫連接
 $servername = "localhost";
@@ -23,14 +23,13 @@ if ($conn->connect_error) {
 }
 
 // 查詢會員資料
-$sql = "SELECT * FROM users WHERE username = '$username'";
+$sql = "SELECT * FROM customers WHERE email = '$email'";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
-    $username = $row['username'];
-    $interest = $row['interest'];
-    $expertise = $row['expertise'];
+    $name = $row['name'];
+    $email = $row['email'];
 } else {
     // 找不到會員資料，重定向到登入頁面
     header("Location: login1.php");
@@ -78,19 +77,15 @@ input {
     <table cellpadding="5">
       <tr>
         <td align="right">帳號：</td>
-        <td align="left"><?php echo $username; ?></td>
+        <td align="left"><?php echo $email; ?></td>
       </tr>
       <tr>
-        <td align="right">興趣：</td>
-        <td align="left"><input type="text" name="interest" value="<?php echo $interest; ?>"></td>
-      </tr>
-      <tr>
-        <td align="right">專長：</td>
-        <td align="left"><input type="text" name="expertise" value="<?php echo $expertise; ?>"></td>
+        <td align="right">名稱：</td>
+        <td align="left"><input type="text" name="name" value="<?php echo $name; ?>"></td>
       </tr>
       <tr>
         <td align="right">新帳號：</td>
-        <td align="left"><input type="email" name="new_username" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" required></td>
+        <td align="left"><input type="email" name="new_email" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" required></td>
       </tr>
       <tr>
         <td colspan="2" align="center">
@@ -100,6 +95,7 @@ input {
     </table>
   </form>
   <p><a href="change_password.html">變更密碼</a></p>
+  <p><a href="bus.html">進入商場</a></p>
   <p><a href="logout.php">登出</a></p>
 </div>
 </body>
