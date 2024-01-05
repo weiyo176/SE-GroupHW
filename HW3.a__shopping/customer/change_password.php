@@ -2,13 +2,13 @@
 session_start();
 
 // 檢查會員是否已登入
-if (!isset($_SESSION['username'])) {
+if (!isset($_SESSION['email'])) {
     header("Location: login1.php");
     exit();
 }
 
 // 取得會員帳號
-$username = $_SESSION['username'];
+$email = $_SESSION['email'];
 
 // 取得表單提交的資料
 $old_password = $_POST['old_password'];
@@ -17,10 +17,10 @@ $confirm_password = $_POST['confirm_password'];
 
 // 建立資料庫連接
 $servername = "localhost";
-$db_username = "110213065";
-$db_password = "z2112240";
-$db_name = "110213065";
-$conn = new mysqli($servername, $db_username, $db_password, $db_name);
+$username_db = "root";
+$password_db = "";
+$dbname = "mvc_c";
+$conn = new mysqli($servername, $username_db, $password_db, $dbname);
 
 // 檢查連接是否成功
 if ($conn->connect_error) {
@@ -28,7 +28,7 @@ if ($conn->connect_error) {
 }
 
 // 取得會員資料
-$sql = "SELECT * FROM users WHERE username = '$username'";
+$sql = "SELECT * FROM customers WHERE email = '$email'";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
@@ -41,7 +41,7 @@ if ($result->num_rows > 0) {
         if ($new_password === $confirm_password) {
             // 更新密碼
             $new_hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
-            $update_sql = "UPDATE users SET password = '$new_hashed_password' WHERE username = '$username'";
+            $update_sql = "UPDATE customers SET password = '$new_hashed_password' WHERE email = '$email'";
 
             if ($conn->query($update_sql) === TRUE) {
                 echo "<script>alert('密碼變更成功');</script>";

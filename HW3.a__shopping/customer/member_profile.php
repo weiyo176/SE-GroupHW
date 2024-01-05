@@ -12,9 +12,9 @@ $username = $_SESSION['username'];
 
 // 建立資料庫連接
 $servername = "localhost";
-$username_db = "110213065";
-$password_db = "z2112240";
-$dbname = "110213065";
+$username_db = "root";
+$password_db = "";
+$dbname = "mvc_c";
 $conn = new mysqli($servername, $username_db, $password_db, $dbname);
 
 // 檢查連接是否成功
