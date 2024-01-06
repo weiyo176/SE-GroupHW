@@ -72,7 +72,7 @@ input[type="reset"]:hover {
   text-align: center;
   display: none;
 }
-a.business-link {
+a.home-link {
       position: relative;
       display: block;
       text-align: center;
@@ -85,24 +85,15 @@ a.business-link {
       margin-left: calc(100% - 150px); /* 與表格右邊的距離 */
     }
 
-    a.business-link:hover {
+    a.home-link:hover {
       background-color: #45a049;
     }
-    #register-link {
-  text-decoration: none; /* 消除超連結的底線 */
-  color: blue; /* 保留原本的文字顏色 */
-}
-
-#register-link:hover {
-  text-decoration: none; /* 消除超連結的底線 */
-  color: blue; /* 保留原本的文字顏色 */
-}
 </style>
 </head>
 <body>
 <div id="cont">
-  <h2>會員登入</h2>
-  <form action="login.php" method="post">
+  <h2>商家登入</h2>
+  <form action="blogin.php" method="post">
     <label for="email">帳號:</label>
     <input type="text" name="email" id="email" required>
     <br>
@@ -112,8 +103,7 @@ a.business-link {
     <input type="submit" value="登入">
     <input type="reset">
   </form>
-  <p>尚未註冊會員？<a href="register.html" id="register-link">點此註冊</a></p>
-  <a href="blogin1.php" class="business-link">商家登入</a>
+  <p><a href="login1.php" class="home-link">回到首頁</a></p>
   <?php
   if (isset($_GET['error']) && $_GET['error'] === '1') {
     echo "<script>alert('登入失敗，請檢查帳號和密碼');</script>";

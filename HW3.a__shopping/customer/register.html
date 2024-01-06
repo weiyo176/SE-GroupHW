@@ -88,6 +88,25 @@
       color: red;
       margin-top: 5px;
     }
+
+    a.business-link {
+      position: relative;
+      display: block;
+      text-align: center;
+      background-color: #4CAF50;
+      color: #fff;
+      padding: 8px 16px;
+      text-decoration: none;
+      border-radius: 4px;
+      margin-top: 20px;
+      /* 與表格的距離 */
+      margin-left: calc(100% - 150px);
+      /* 與表格右邊的距離 */
+    }
+
+    a.business-link:hover {
+      background-color: #45a049;
+    }
   </style>
   <script>
     function togglePasswordVisibility() {
@@ -129,6 +148,7 @@
       <div style="text-align: center;">
         <button type="submit">註冊</button>
         <button type="reset">重設</button>
+        <a href="bregister.html" class="business-link">我是商家</a>
       </div>
     </form>
   </div>

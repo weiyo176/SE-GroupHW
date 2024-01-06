@@ -3,7 +3,7 @@ session_start();
 
 // 檢查會員是否已登入
 if (!isset($_SESSION['email'])) {
-    header("Location: login1.php");
+    header("Location: blogin1.php");
     exit();
 }
 
@@ -23,7 +23,7 @@ if ($conn->connect_error) {
 }
 
 // 查詢會員資料
-$sql = "SELECT * FROM customers WHERE email = '$email'";
+$sql = "SELECT * FROM business WHERE email = '$email'";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
@@ -32,7 +32,7 @@ if ($result->num_rows > 0) {
     $email = $row['email'];
 } else {
     // 找不到會員資料，重定向到登入頁面
-    header("Location: login1.php");
+    header("Location: blogin1.php");
     exit();
 }
 
@@ -73,7 +73,7 @@ input {
       echo '<p style="color: red;">資料更新失敗</p>';
   }
   ?>
-  <form action="update_profile.php" method="post">
+  <form action="bupdate_profile.php" method="post">
     <table cellpadding="5">
       <tr>
         <td align="right">帳號：</td>
@@ -94,8 +94,8 @@ input {
       </tr>
     </table>
   </form>
-  <p><a href="change_password.html">變更密碼</a></p>
-  <p><a href="cus.html">進入商場</a></p>
+  <p><a href="bchange_password.html">變更密碼</a></p>
+  <p><a href="bus.html">進入商場</a></p>
   <p><a href="logout.php">登出</a></p>
 </div>
 </body>
