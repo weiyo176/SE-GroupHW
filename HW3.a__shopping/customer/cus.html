@@ -2,7 +2,7 @@
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<script type="text/javascript" src="https://unpkg.com/vue@3.0.11"></script>
+	<script type="text/javascript" src="https://unpkg.com/vue@3.4.5/dist/vue.global.js"></script>
 </head>
 
 <body>
@@ -42,7 +42,9 @@
 						<td>{{items.price}}</td>
 						<td>{{items.amount}}</td>
 						<td>{{items.total}}</td>
-						<td><button @click="minusitems(items.gID)">-</button><button @click="plusitems(items.gID)">+</button><button @click="delitems(items.gID)">移出購物車</button></td>
+						<td><button @click="minusitems(items.gID)">-</button><button
+								@click="plusitems(items.gID)">+</button><button
+								@click="delitems(items.gID)">移出購物車</button></td>
 					</template>
 					<template v-if="index == dat2.length-1 ">
 						<td></td>
@@ -86,11 +88,11 @@
 							</template>
 							<template v-else>
 								<div>{{ order.rating }} 星</div>
-							  </template>
 							</template>
-							<template v-else>
-								{{ order.rating }}
-							</template>
+						</template>
+						<template v-else>
+							{{ order.rating }}
+						</template>
 						</template>
 					</td>
 				</tr>
@@ -143,7 +145,7 @@
 				},
 				minusitems: function (gID) {
 					const that = this;
-					let url = "shoppingControl.php?act=minusItem&ifplus="+0+"&gID=" + gID;
+					let url = "shoppingControl.php?act=minusItem&ifplus=" + 0 + "&gID=" + gID;
 					fetch(url, {
 						method: 'POST'
 					})
@@ -156,7 +158,7 @@
 				},
 				plusitems: function (gID) {
 					const that = this;
-					let url = "shoppingControl.php?act=minusItem&ifplus="+1+"&gID=" + gID;
+					let url = "shoppingControl.php?act=minusItem&ifplus=" + 1 + "&gID=" + gID;
 					fetch(url, {
 						method: 'POST'
 					})
@@ -244,21 +246,21 @@
 						method: 'POST',
 						body: formData
 					})
-					.then(response => {
-						if (!response.ok) {
-							throw new Error(`HTTP error! Status: ${response.status}`);
-						}
-						return response.text();
-					})
-					.then(data => {
-						console.log(data);
-						that.isRatingSubmitted[gID] = true;
-						that.loadmyorder();
-					})
-					.catch(error => {
-						console.error('Error submitting rating:', error);
-					});
-},
+						.then(response => {
+							if (!response.ok) {
+								throw new Error(`HTTP error! Status: ${response.status}`);
+							}
+							return response.text();
+						})
+						.then(data => {
+							console.log(data);
+							that.isRatingSubmitted[gID] = true;
+							that.loadmyorder();
+						})
+						.catch(error => {
+							console.error('Error submitting rating:', error);
+						});
+				},
 				setUI: function (page) {
 					this.UI = page;
 				}

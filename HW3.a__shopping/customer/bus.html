@@ -2,7 +2,11 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<<<<<<< HEAD
     <script type="text/javascript" src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+=======
+    <script type="text/javascript" src="https://unpkg.com/vue@3.4.5/dist/vue.global.js"></script>
+>>>>>>> f9313b3 (no message)
 </head>
 
 <body>
@@ -98,7 +102,13 @@
                     <td>{{job.total}}</td>
                     <td>{{job.status}}</td>
                     <td>
+<<<<<<< HEAD
                         <button v-if="(index < order.length - 1 && job.oID !== order[index + 1].oID) || index == order.length - 1" @click="checkStatus(job.oID)">處理</button>
+=======
+                        <button
+                            v-if="(index < order.length - 1 && job.oID !== order[index + 1].oID) || index == order.length - 1"
+                            @click="checkStatus(job.oID)">額外按鈕</button>
+>>>>>>> f9313b3 (no message)
                     </td>
                 </tr>
                 </tr>
@@ -231,12 +241,12 @@
                 },
                 checkStatus: function (oID) {
                     const that = this;
-                    let url = "shoppingControl.php?act=checkStatus&id=" + oID+"&rule=" + 1;
+                    let url = "shoppingControl.php?act=checkStatus&id=" + oID + "&rule=" + 1;
                     fetch(url, {
                         method: 'POST'
                     })
-                        .then(function (res) { 
-                            return res.text(); 
+                        .then(function (res) {
+                            return res.text();
                         }) //取得傳回值，轉為文字
                         .then(function (data) {
                             console.log(data);
