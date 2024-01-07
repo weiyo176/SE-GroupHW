@@ -118,6 +118,18 @@
 				}
 			},
 			methods: {
+				// 將評分保存到localStorage
+				saveRatingsToStorage() {
+					localStorage.setItem('submittedRatings', JSON.stringify(this.isRatingSubmitted));
+				},
+
+				// 從localStorage加載評分
+				loadRatingsFromStorage() {
+					const storedRatings = localStorage.getItem('submittedRatings');
+					if (storedRatings) {
+						this.isRatingSubmitted = JSON.parse(storedRatings);
+					}
+				},
 				loadItem: function () {
 					const that = this; //this  ==> stands for vm6. let's save `this` to `that`
 					fetch('shoppingControl.php?act=listitem')
@@ -273,6 +285,7 @@
 						.then(data => {
 							console.log(data);
 							that.isRatingSubmitted[gID] = true;
+							that.saveRatingsToStorage(); // 提交後保存評分到localStorage
 							that.loadmyorder();
 						})
 						.catch(error => {
@@ -287,6 +300,7 @@
 				this.loadItem();
 				this.loadCart();
 				this.loadUserData();
+				this.loadRatingsFromStorage();
 			}
 		}).mount("#main");
 	</script>
