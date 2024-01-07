@@ -5,10 +5,10 @@ function checkStatus($oID,$rule) {
 	global $db;
 	//if rule=1, select all status=未處理 or status=處理中
 	if ($rule == 1)
-		$sql = "select * from customer where oID=$oID && (status = \"未處理\" or status = \"處理中\");";
+		$sql = "select * from mer_order where oID=$oID && (status = \"未處理\" or status = \"處理中\");";
 	//if rule=2, select all status=處理中
 	else if ($rule == 2)
-		$sql = "select * from customer where oID=$oID && status = \"寄送中\";";
+		$sql = "select * from mer_order where oID=$oID && status = \"寄送中\";";
 	$stmt = mysqli_prepare($db, $sql ); //precompile sql指令，建立statement 物件，以便執行SQL
 	mysqli_stmt_execute($stmt); //執行SQL
 	$result = mysqli_stmt_get_result($stmt); //取得查詢結果
@@ -18,19 +18,19 @@ function checkStatus($oID,$rule) {
 	// 如果status是未處理將資料庫update成處理中，如果是處理中則設成寄送中
 	while($r = mysqli_fetch_assoc($result)) {
 		if ($r['status'] == "未處理") {
-			$updateSql = "UPDATE customer SET status = ? WHERE gID = ?";
+			$updateSql = "UPDATE mer_order SET status = ? WHERE gID = ?";
 			$updateStmt = mysqli_prepare($db, $updateSql);
 			mysqli_stmt_bind_param($updateStmt, "si", $status, $r['gID']);
 			mysqli_stmt_execute($updateStmt);
 		}
 		else if ($r['status'] == "處理中") {
-			$updateSql = "UPDATE customer SET status = ? WHERE gID = ?";
+			$updateSql = "UPDATE mer_order SET status = ? WHERE gID = ?";
 			$updateStmt = mysqli_prepare($db, $updateSql);
 			mysqli_stmt_bind_param($updateStmt, "si", $status2, $r['gID']);
 			mysqli_stmt_execute($updateStmt);
 		}
 		else if ($r['status'] == "寄送中") {
-			$updateSql = "UPDATE customer SET status = ? WHERE gID = ?";
+			$updateSql = "UPDATE mer_order SET status = ? WHERE gID = ?";
 			$updateStmt = mysqli_prepare($db, $updateSql);
 			mysqli_stmt_bind_param($updateStmt, "si", $status3, $r['gID']);
 			mysqli_stmt_execute($updateStmt);
@@ -83,7 +83,6 @@ function getCartList() {
 		$rows[] = $r; //將此筆資料新增到陣列中
 	}
 	$newData = array(
-		'goods' => 'TotalPrice',
 		'total' => $totalPrice
 	);
 	$rows[] = $newData;
@@ -116,10 +115,10 @@ function addItem($id,$name,$price) {
     return True;
 }
 
-function minusItem($id,$ifplus) {
+function minusItem($gID,$ifplus) {
 	global $db;
 
-	$sql = "select * from customer where id= $id;";
+	$sql = "select * from customer where gID= $gID;";
     $stmt = mysqli_prepare($db, $sql); //prepare sql statement
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt); //取得查詢結果
@@ -130,19 +129,19 @@ function minusItem($id,$ifplus) {
 		$newAmount = $row['amount'] - 1;
 	if ($newAmount >= 0){
 		$newTotal = $newAmount * $row['price'];
-		$updateSql = "UPDATE customer SET amount = ?, total = ? WHERE id = ?";
+		$updateSql = "UPDATE customer SET amount = ?, total = ? WHERE gID = ?";
 		$updateStmt = mysqli_prepare($db, $updateSql);
-		mysqli_stmt_bind_param($updateStmt, "iii", $newAmount, $newTotal, $id);
+		mysqli_stmt_bind_param($updateStmt, "iii", $newAmount, $newTotal, $gID);
 		mysqli_stmt_execute($updateStmt);
 	}
 	return True;
 }
-function delItem($id) {
+function delItem($gID) {
 	global $db;
 
-	$sql = "delete from customer where id=?;"; //SQL中的 ? 代表未來要用變數綁定進去的地方
+	$sql = "delete from customer where gID=?;"; //SQL中的 ? 代表未來要用變數綁定進去的地方
 	$stmt = mysqli_prepare($db, $sql); //prepare sql statement
-	mysqli_stmt_bind_param($stmt, "i", $id); //bind parameters with variables, with types "sss":string, string ,string
+	mysqli_stmt_bind_param($stmt, "i", $gID); //bind parameters with variables, with types "sss":string, string ,string
 	mysqli_stmt_execute($stmt);  //執行SQL
 	return True;
 }
@@ -185,7 +184,43 @@ function delJob($id) {
 
 	$sql = "delete from items where id=?;"; //SQL中的 ? 代表未來要用變數綁定進去的地方
 	$stmt = mysqli_prepare($db, $sql); //prepare sql statement
-	mysqli_stmt_bind_param($stmt, "i", $id); //bind parameters with variables, with types "sss":string, string ,string
+	mysqli_stmt_bind_param($stmt, "i", $id); //bind parameters with variables
+	mysqli_stmt_execute($stmt);  //執行SQL
+	return True;
+}
+
+function CheckOut() {
+	global $db;
+	
+	$sql = "INSERT INTO mer_order (gID, id, cID, goods, price, amount, total, status) SELECT gID, ID, cID, goods, price, amount, total, status FROM customer";
+	$stmt = mysqli_prepare($db, $sql);
+	mysqli_stmt_execute($stmt);  //執行SQL
+	
+	$sql1 = "delete from customer;";
+	$stmt = mysqli_prepare($db, $sql1);
+	mysqli_stmt_execute($stmt);  //執行SQL
+	
+	return True;
+}
+
+function getmyorder() {
+	global $db;
+	$sql = "select rating, gID, goods, price, amount, total, status,  CASE WHEN status = '已送達' THEN 1 ELSE 0 END AS enableRating from mer_order where cid = 1;";
+	$stmt = mysqli_prepare($db, $sql ); //precompile sql指令，建立statement 物件，以便執行SQL
+	mysqli_stmt_execute($stmt); //執行SQL
+	$result = mysqli_stmt_get_result($stmt); //取得查詢結果
+	$rows = array(); //要回傳的陣列
+	while($r = mysqli_fetch_assoc($result)) {
+		$rows[] = $r; //將此筆資料新增到陣列中
+	}
+	return $rows;
+}
+function SubmitRating($gID, $rating) {
+	global $db;
+
+	$sql = "update mer_order set rating=? where gID=?"; //SQL中的 ? 代表未來要用變數綁定進去的地方
+	$stmt = mysqli_prepare($db, $sql); //prepare sql statement
+	mysqli_stmt_bind_param($stmt, "si", $rating, $gID); 
 	mysqli_stmt_execute($stmt);  //執行SQL
 	return True;
 }

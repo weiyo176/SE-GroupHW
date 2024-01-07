@@ -2,7 +2,7 @@
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<script type="text/javascript" src="https://unpkg.com/vue@next"></script>
+	<script type="text/javascript" src="https://unpkg.com/vue@3.0.11"></script>
 </head>
 
 <body>
@@ -10,7 +10,7 @@
 	<div id="main">
 		<div id="list" v-if="UI=='main'">
 			<h1>Welcome</h1>
-			<button @click="setUI('cart')">購物車</button>
+			<button @click="setUI('cart')">購物車</button> <button @click="setUI('order')">查看歷史訂單</button>
 			<table border=1>
 				<tr>
 					<td>商品名稱</td>
@@ -22,7 +22,7 @@
 					<td>{{good.name}}</td>
 					<td>{{good.description}}</td>
 					<td>{{good.price}}</td>
-					<td><button @click="addgood(good.id)">加入購物車</button></td>
+					<td><button @click="additems(good.id)">加入購物車</button></td>
 				</tr>
 			</table>
 		</div>
@@ -36,21 +36,63 @@
 					<td>總價</td>
 					<td>-</td>
 				</tr>
-				<tr v-for="(good, index) in dat2" :key="good.id">
+				<tr v-for="(items, index) in dat2" :key="items.gID">
 					<template v-if="index !== dat2.length - 1">
-						<td>{{good.goods}}</td>
-						<td>{{good.price}}</td>
-						<td>{{good.amount}}</td>
-						<td>{{good.total}}</td>
-						<td><button @click="minusgood(good.id)">-</button><button @click="plusgood(good.id)">+</button><button @click="delgood(good.id)">移出購物車</button></td>
+						<td>{{items.goods}}</td>
+						<td>{{items.price}}</td>
+						<td>{{items.amount}}</td>
+						<td>{{items.total}}</td>
+						<td><button @click="minusitems(items.gID)">-</button><button @click="plusitems(items.gID)">+</button><button @click="delitems(items.gID)">移出購物車</button></td>
 					</template>
 					<template v-if="index == dat2.length-1 ">
 						<td></td>
 						<td></td>
 						<td></td>
-						<td>{{good.goods}}</td>
-						<td>{{good.total}}</td>
+						<td>{{items.total}}</td>
 					</template>
+				</tr>
+			</table><br>
+			<button @click="buy">結帳</button>
+		</div>
+		<div v-if="UI == 'order'">
+			<button @click="setUI('main')">回首頁</button>
+			<table border="1">
+				<tr>
+					<td>商品名稱</td>
+					<td>單價</td>
+					<td>商品數量</td>
+					<td>總價</td>
+					<td>狀態</td>
+					<td>滿意度</td>
+					<td>-</td>
+				</tr>
+				<tr v-for="order in order_dat" :key="order.gID">
+					<td>{{ order.goods }}</td>
+					<td>{{ order.price }}</td>
+					<td>{{ order.amount }}</td>
+					<td>{{ order.total }}</td>
+					<td>{{ order.status }}</td>
+					<td>
+						<template v-if="order.status === '已送達'">
+							<template v-if="!isRatingSubmitted[order.gID]">
+								<select v-model="selectedRatings[order.gID]">
+									<option value="1">1 star</option>
+									<option value="2">2 stars</option>
+									<option value="3">3 stars</option>
+									<option value="4">4 stars</option>
+									<option value="5">5 stars</option>
+								</select>
+								<button @click="submitRating(order.gID, selectedRatings[order.gID])">提交</button>
+							</template>
+							<template v-else>
+								<div>{{ order.rating }} 星</div>
+							  </template>
+							</template>
+							<template v-else>
+								{{ order.rating }}
+							</template>
+						</template>
+					</td>
 				</tr>
 			</table><br>
 		</div>
@@ -62,11 +104,14 @@
 					UI: 'main',
 					dat: [],
 					dat2: [],
+					order_dat: [],
 					shoppingcart: {
-						goodName: '',
-						goodPrice: '',
-						goodNum: ''
-					}
+						itemsName: '',
+						itemsPrice: '',
+						itemsNum: ''
+					},
+					selectedRatings: {},
+					isRatingSubmitted: {},
 				}
 			},
 			methods: {
@@ -96,9 +141,9 @@
 							//vm6.dat = myJson;
 						});
 				},
-				minusgood: function (id) {
+				minusitems: function (gID) {
 					const that = this;
-					let url = "shoppingControl.php?act=minusItem&ifplus="+0+"&id=" + id;
+					let url = "shoppingControl.php?act=minusItem&ifplus="+0+"&gID=" + gID;
 					fetch(url, {
 						method: 'POST'
 					})
@@ -109,9 +154,9 @@
 							that.loadItem();
 						})
 				},
-				plusgood: function (id) {
+				plusitems: function (gID) {
 					const that = this;
-					let url = "shoppingControl.php?act=minusItem&ifplus="+1+"&id=" + id;
+					let url = "shoppingControl.php?act=minusItem&ifplus="+1+"&gID=" + gID;
 					fetch(url, {
 						method: 'POST'
 					})
@@ -122,30 +167,29 @@
 							that.loadItem();
 						})
 				},
-				delgood: function (id) {
+				delitems: function (gID) {
 					const that = this;
-					let url = "shoppingControl.php?act=delItem&id=" + id;
+					let url = "shoppingControl.php?act=delItem&gID=" + gID;
 					fetch(url, {
 						method: 'POST'
 					})
-						.then(function (res) { return res.text(); }) //取得傳回值，轉為文字
 						.then(function (data) {
 							console.log(data);
 							that.loadCart();
 							that.loadItem();
 						})
 				},
-				addgood: function (id) {
+				additems: function (id) {
 					const that = this; //this  ==> stands for vm6. let's save `this` to `that`
 
-					var selectedGood = this.dat.find(good => good.id === id);// 找到特定id對應的商品數據
+					var selecteditems = this.dat.find(items => items.id === id);// 找到特定id對應的商品數據
 
 					// 使用FormData對數據進行打包
 					var formData = new FormData();
-					formData.append('id', selectedGood.id);
-					formData.append('name', selectedGood.name);
-					formData.append('description', selectedGood.description);
-					formData.append('price', selectedGood.price);
+					formData.append('id', selecteditems.id);
+					formData.append('name', selecteditems.name);
+					formData.append('description', selecteditems.description);
+					formData.append('price', selecteditems.price);
 
 
 					// 發送 FormData 給後端
@@ -162,6 +206,59 @@
 							that.loadItem();
 						})
 				},
+				buy: function () {
+					const that = this;
+					let url = "shoppingControl.php?act=checkout";
+					fetch(url, {
+						method: 'POST'
+					})
+						.then(function () {
+							that.loadCart();
+							that.loadItem();
+							that.loadmyorder();
+						})
+				},
+				loadmyorder: function () {
+					const that = this; //this  ==> stands for vm6. let's save `this` to `that`
+					fetch('shoppingControl.php?act=checkmyorder')
+						.then(function (response) {
+							return response.json();
+						})
+						.then(function (myJson) {
+							//we are inside the callback function, now `this` means the function, not vm6
+							//we will use `that` to access vm6
+							that.order_dat = myJson;
+							//vm6.dat = myJson;
+						});
+				},
+				submitRating: function (gID, rating) {
+					const that = this;
+
+					const formData = new FormData();
+					formData.append('gID', gID);
+					formData.append('rating', rating);
+
+					let url = "shoppingControl.php?act=submitRating";
+
+					fetch(url, {
+						method: 'POST',
+						body: formData
+					})
+					.then(response => {
+						if (!response.ok) {
+							throw new Error(`HTTP error! Status: ${response.status}`);
+						}
+						return response.text();
+					})
+					.then(data => {
+						console.log(data);
+						that.isRatingSubmitted[gID] = true;
+						that.loadmyorder();
+					})
+					.catch(error => {
+						console.error('Error submitting rating:', error);
+					});
+},
 				setUI: function (page) {
 					this.UI = page;
 				}
@@ -169,6 +266,7 @@
 			created() {
 				this.loadItem();
 				this.loadCart();
+				this.loadmyorder();
 			}
 		}).mount("#main");
 	</script>

@@ -28,23 +28,22 @@ case "addItem":
     // 驗證步驟...
     addItem($id, $name, $price);
     return;
-    case "minusItem":
-      $id=(int)$_REQUEST['id']; //$_GET, $_REQUEST
-      $ifplus=(int)$_REQUEST['ifplus'];
-      //verify
-      minusItem($id,$ifplus);
-      return;
+case "minusItem":
+    $gID=(int)$_REQUEST['gID']; //$_GET, $_REQUEST
+    $ifplus=(int)$_REQUEST['ifplus'];
+    //verify
+    minusItem($gID,$ifplus);
+    return;
 case "delItem":
-	$id=(int)$_REQUEST['id']; //$_GET, $_REQUEST
+	$gID=(int)$_REQUEST['gID']; //$_GET, $_REQUEST
 	//verify
-	delItem($id);
+	delItem($gID);
 	return;
 case "listJob":
   $jobs=getJobList();
   echo json_encode($jobs);
   return;  
-case "addJob":
-	
+case "addJob":	
 	$jsonStr = $_POST['dat'];
 	$job = json_decode($jsonStr);
 	//should verify first
@@ -55,6 +54,18 @@ case "delJob":
 	//verify
 	delJob($id);
 	return;
+case "checkout":
+    CheckOut();
+    return;	
+case "checkmyorder":
+  $myorder=getmyorder();
+  echo json_encode($myorder);
+  return;
+case "submitRating":
+	$gID = $_POST['gID']; 
+	$rating = $_POST['rating']; 
+	SubmitRating($gID, $rating);
+	return;  
 default:  
 
   
