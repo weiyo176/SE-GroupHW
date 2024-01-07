@@ -156,10 +156,10 @@ function getCartList()
 	return $rows;
 }
 
-function addItem($id, $name, $price)
+function addItem($id, $name, $price, $userID)
 {
 	global $db;
-	$sql = "select * from customer where id= $id && cID = 1;";
+	$sql = "select * from customer where id= $id && cID = $userID;";
 	$stmt = mysqli_prepare($db, $sql); //prepare sql statement
 	mysqli_stmt_execute($stmt);
 	$result = mysqli_stmt_get_result($stmt); //取得查詢結果
@@ -173,14 +173,14 @@ function addItem($id, $name, $price)
 		mysqli_stmt_execute($updateStmt);
 	} else {
 		$amount = 1;
-		$cID = 1;
 		$sql = "insert into customer (cID,id, goods, price, amount, total) values (?, ?, ?, ?, ?, ?)"; //SQL中的 ? 代表未來要用變數綁定進去的地方
 		$stmt = mysqli_prepare($db, $sql); //prepare sql statement
-		mysqli_stmt_bind_param($stmt, "iisiii", $cID, $id, $name, $price, $amount, $price); //bind parameters with variables, with types "sss":string, string ,string
+		mysqli_stmt_bind_param($stmt, "iisiii", $userID, $id, $name, $price, $amount, $price); //bind parameters with variables, with types "sss":string, string ,string
 		mysqli_stmt_execute($stmt);  //執行SQL
 	}
 	return True;
 }
+
 
 function minusItem($gID, $ifplus)
 {
@@ -277,18 +277,29 @@ function CheckOut()
 	return True;
 }
 
-function getmyorder()
+function getmyorder($cID)
 {
-	global $db;
-	$sql = "select *,  CASE WHEN status = '已送達' THEN 1 ELSE 0 END AS enableRating from mer_order where cid = 1;";
-	$stmt = mysqli_prepare($db, $sql ); //precompile sql指令，建立statement 物件，以便執行SQL
-	mysqli_stmt_execute($stmt); //執行SQL
-	$result = mysqli_stmt_get_result($stmt); //取得查詢結果
-	$rows = array(); //要回傳的陣列
-	while ($r = mysqli_fetch_assoc($result)) {
-		$rows[] = $r; //將此筆資料新增到陣列中
-	}
-	return $rows;
+    global $db;
+
+    $sql = "SELECT *, CASE WHEN status = '已送達' THEN 1 ELSE 0 END AS enableRating FROM mer_order WHERE cid = ?;";
+    $stmt = mysqli_prepare($db, $sql);
+
+
+    mysqli_stmt_bind_param($stmt, "i", $cID);
+
+
+    mysqli_stmt_execute($stmt);
+
+
+    $result = mysqli_stmt_get_result($stmt);
+    $rows = array();
+
+
+    while ($r = mysqli_fetch_assoc($result)) {
+        $rows[] = $r;
+    }
+
+    return $rows;
 }
 function SubmitRating($gID, $rating)
 {

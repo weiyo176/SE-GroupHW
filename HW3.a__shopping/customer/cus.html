@@ -22,7 +22,7 @@
 					<td>{{good.name}}</td>
 					<td>{{good.description}}</td>
 					<td>{{good.price}}</td>
-					<td><button @click="additems(good.id)">加入購物車</button></td>
+					<td><button @click="additems(good.id, this.userID)">加入購物車</button></td>
 				</tr>
 			</table>
 		</div>
@@ -114,6 +114,7 @@
 					},
 					selectedRatings: {},
 					isRatingSubmitted: {},
+					userID: ''
 				}
 			},
 			methods: {
@@ -181,7 +182,7 @@
 							that.loadItem();
 						})
 				},
-				additems: function (id) {
+				additems: function (id, userID) {
 					const that = this; //this  ==> stands for vm6. let's save `this` to `that`
 
 					var selecteditems = this.dat.find(items => items.id === id);// 找到特定id對應的商品數據
@@ -192,6 +193,7 @@
 					formData.append('name', selecteditems.name);
 					formData.append('description', selecteditems.description);
 					formData.append('price', selecteditems.price);
+					formData.append('userID', userID);
 
 
 					// 發送 FormData 給後端
@@ -217,21 +219,37 @@
 						.then(function () {
 							that.loadCart();
 							that.loadItem();
-							that.loadmyorder();
+							that.loadmyorder(that.userID);
 						})
 				},
 				loadmyorder: function () {
-					const that = this; //this  ==> stands for vm6. let's save `this` to `that`
-					fetch('shoppingControl.php?act=checkmyorder')
+					const that = this;
+					const cID = this.userID;
+					console.log('cID:', cID);
+					fetch('shoppingControl.php?act=checkmyorder&cID=' + cID)
 						.then(function (response) {
 							return response.json();
 						})
 						.then(function (myJson) {
-							//we are inside the callback function, now `this` means the function, not vm6
-							//we will use `that` to access vm6
 							that.order_dat = myJson;
-							//vm6.dat = myJson;
 						});
+				},
+
+				loadUserData: function () {
+					const that = this;
+					fetch('member_profile.php', {
+						method: 'GET',
+					})
+					.then(response => response.text())
+					.then(data => {
+						that.userID = parseInt(data, 10); 
+						console.log('User ID:', that.userID);
+						that.loadmyorder(that.userID);
+					})
+					.catch(error => {
+						console.error('Error loading user data:', error);
+						alert('Error loading user data: ' + error.message);
+					});
 				},
 				submitRating: function (gID, rating) {
 					const that = this;
@@ -268,7 +286,7 @@
 			created() {
 				this.loadItem();
 				this.loadCart();
-				this.loadmyorder();
+				this.loadUserData();
 			}
 		}).mount("#main");
 	</script>

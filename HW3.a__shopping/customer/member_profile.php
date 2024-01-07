@@ -28,8 +28,11 @@ $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
+	$userId = $row['cID']; // 這是主鍵
     $name = $row['name'];
     $email = $row['email'];
+	
+	echo $userId;
 } else {
     // 找不到會員資料，重定向到登入頁面
     header("Location: login1.php");

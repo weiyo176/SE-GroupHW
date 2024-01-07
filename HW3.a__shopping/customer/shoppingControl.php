@@ -40,9 +40,10 @@ case "listcart":
 case "addItem":
     $id = $_POST['id'];  
     $name = $_POST['name'];  
-    $price = $_POST['price'];  
+    $price = $_POST['price'];
+	$userID = $_POST['userID']; 	
     // 驗證步驟...
-    addItem($id, $name, $price);
+    addItem($id, $name, $price, $userID);
     return;
 case "minusItem":
     $gID=(int)$_REQUEST['gID']; //$_GET, $_REQUEST
@@ -76,9 +77,10 @@ case "checkout":
     CheckOut();
     return;	
 case "checkmyorder":
-  $myorder=getmyorder();
-  echo json_encode($myorder);
-  return;
+    $cID = $_REQUEST['cID']; // 獲取前端傳遞的cID參數
+    $myorder = getmyorder($cID);
+    echo json_encode($myorder);
+    return;
 case "submitRating":
 	$gID = $_POST['gID']; 
 	$rating = $_POST['rating']; 
