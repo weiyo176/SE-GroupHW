@@ -2,7 +2,7 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script type="text/javascript" src="https://unpkg.com/vue@next"></script>
+    <script type="text/javascript" src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 </head>
 
 <body>
@@ -29,13 +29,13 @@
                     <td>{{job.total}}</td>
                     <td>{{job.status}}</td>
                     <td>
-                        <button v-if="(index < order.length - 1 && job.oID !== order[index + 1].oID) || index == order.length - 1" @click="checkStatus(job.oID)">額外按鈕</button>
+                        <button v-if="(index < order.length - 1 && job.oID !== order[index + 1].oID) || index == order.length - 1" @click="checkStatus(job.oID)">配送</button>
                     </td>
                 </tr>
                 </tr>
             </table>
         </div>
-        <div v-if="UI=='editForm'">
+        <!-- <div v-if="UI=='editForm'">
             商品名稱: <input type="text" v-model="newJob.name" /> <br />
 
             價錢: <input type="text" v-model="newJob.price" /> <br />
@@ -43,7 +43,7 @@
             商品說明: <textarea v-model="newJob.description"></textarea><br>
 
             <input type='button' @click="addJob()" value="save">
-        </div>
+        </div> -->
     </div>
 
     <script>
@@ -64,7 +64,7 @@
             methods: {
                 orderList: function () {
                     const that = this; //this  ==> stands for vm6. let's save `this` to `that`
-                    fetch('shoppingControl.php?act=orderList&rule=2')
+                    fetch('shoppingControl.php?act=orderList&rule=2&bID=0')
                         .then(function (response) {
                             return response.json();
                         })

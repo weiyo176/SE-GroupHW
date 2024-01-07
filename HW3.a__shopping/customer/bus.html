@@ -186,6 +186,7 @@
                             return response.json();
                         })
                         .then(function (myJson) {
+                            console.log(myJson);
                             if (myJson[0].bID !=0) {
                                 that.ID = myJson[0].bID;
                                 that.setUI('main');

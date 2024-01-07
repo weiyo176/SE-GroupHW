@@ -104,13 +104,16 @@ function checkStatus($oID, $rule)
 function getOrderList($rule,$bID)
 {
 	global $db;
-	if ($rule == 1)
+	if ($rule == 1){
 		$sql = "select * from mer_order where id=? && (status = \"未處理\" or status = \"處理中\");";
-	else if ($rule == 2)
-		$sql = "select * from mer_order where id=? && status = \"寄送中\";";
+		$stmt = mysqli_prepare($db, $sql); //precompile sql指令，建立statement 物件，以便執行SQL
+		mysqli_stmt_bind_param($stmt, "i", $bID);
+	}
+	else if ($rule == 2){
+		$sql = "select * from mer_order where status = \"寄送中\";";
+		$stmt = mysqli_prepare($db, $sql);
+	}
 	// $sql = "select * from customer where status = \"未處理\" or status = \"處理中\";";
-	$stmt = mysqli_prepare($db, $sql); //precompile sql指令，建立statement 物件，以便執行SQL
-	mysqli_stmt_bind_param($stmt, "i", $bID);
 	mysqli_stmt_execute($stmt); //執行SQL
 	$result = mysqli_stmt_get_result($stmt); //取得查詢結果
 
