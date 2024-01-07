@@ -263,8 +263,7 @@ function delJob($id)
 function CheckOut()
 {
 	global $db;
-
-	$sql = "INSERT INTO mer_order (gID, id, cID, goods, price, amount, total, status) SELECT gID, ID, cID, goods, price, amount, total, status FROM customer";
+	$sql = "INSERT INTO mer_order (rating, oID, gID, id, cID, goods, price, amount, total, status) SELECT rating, oID, gID, id, cID, goods, price, amount, total, status FROM customer";
 	$stmt = mysqli_prepare($db, $sql);
 	mysqli_stmt_execute($stmt);  //執行SQL
 
@@ -278,8 +277,8 @@ function CheckOut()
 function getmyorder()
 {
 	global $db;
-	$sql = "select rating, gID, goods, price, amount, total, status,  CASE WHEN status = '已送達' THEN 1 ELSE 0 END AS enableRating from mer_order where cid = 1;";
-	$stmt = mysqli_prepare($db, $sql); //precompile sql指令，建立statement 物件，以便執行SQL
+	$sql = "select *,  CASE WHEN status = '已送達' THEN 1 ELSE 0 END AS enableRating from mer_order where cid = 1;";
+	$stmt = mysqli_prepare($db, $sql ); //precompile sql指令，建立statement 物件，以便執行SQL
 	mysqli_stmt_execute($stmt); //執行SQL
 	$result = mysqli_stmt_get_result($stmt); //取得查詢結果
 	$rows = array(); //要回傳的陣列

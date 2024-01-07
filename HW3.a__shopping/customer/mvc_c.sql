@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2023-12-31 04:13:05
+-- 產生時間： 2024-01-07 13:42:46
 -- 伺服器版本： 10.4.28-MariaDB
 -- PHP 版本： 8.2.4
 
@@ -56,17 +56,9 @@ CREATE TABLE `customer` (
   `price` int(11) NOT NULL,
   `amount` int(11) NOT NULL,
   `total` int(11) NOT NULL,
-  `status` varchar(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '未結帳',
-  `rating` int(11) NOT NULL
+  `status` varchar(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '未處理',
+  `rating` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- 傾印資料表的資料 `customer`
---
-
-INSERT INTO `customer` (`gID`, `cID`, `id`, `oID`, `goods`, `price`, `amount`, `total`, `status`, `rating`) VALUES
-(2, 1, 1, 0, 'apple', 10, 1, 10, '未處理', 0),
-(3, 1, 2, 0, 'banana', 20, 2, 40, '未處理', 0);
 
 -- --------------------------------------------------------
 
@@ -103,6 +95,37 @@ INSERT INTO `items` (`bID`, `id`, `name`, `description`, `price`) VALUES
 (1, 1, 'apple', 'aaa', 10),
 (1, 2, 'banana', 'bbb', 20);
 
+-- --------------------------------------------------------
+
+--
+-- 資料表結構 `mer_order`
+--
+
+CREATE TABLE `mer_order` (
+  `gID` int(11) NOT NULL,
+  `id` int(11) NOT NULL,
+  `oID` int(11) NOT NULL,
+  `cID` int(11) NOT NULL,
+  `goods` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `price` int(11) NOT NULL,
+  `amount` int(11) NOT NULL,
+  `total` int(11) NOT NULL,
+  `status` varchar(3) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `rating` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- 傾印資料表的資料 `mer_order`
+--
+
+INSERT INTO `mer_order` (`gID`, `id`, `oID`, `cID`, `goods`, `price`, `amount`, `total`, `status`, `rating`) VALUES
+(4, 1, 0, 1, 'apple', 10, 6, 60, '未結帳', NULL),
+(5, 2, 0, 1, 'banana', 20, 5, 100, '未結帳', NULL),
+(6, 1, 0, 1, 'apple', 10, 10, 100, '未結帳', NULL),
+(7, 2, 0, 1, 'banana', 20, 11, 220, '未結帳', NULL),
+(34, 2, 0, 1, 'banana', 20, 1, 20, '已送達', '4'),
+(35, 1, 0, 1, 'apple', 20, 6, 60, '未處理', NULL);
+
 --
 -- 已傾印資料表的索引
 --
@@ -132,6 +155,12 @@ ALTER TABLE `items`
   ADD PRIMARY KEY (`id`);
 
 --
+-- 資料表索引 `mer_order`
+--
+ALTER TABLE `mer_order`
+  ADD PRIMARY KEY (`gID`);
+
+--
 -- 在傾印的資料表使用自動遞增(AUTO_INCREMENT)
 --
 
@@ -145,7 +174,7 @@ ALTER TABLE `business`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `gID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `gID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `customers`
@@ -158,6 +187,12 @@ ALTER TABLE `customers`
 --
 ALTER TABLE `items`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- 使用資料表自動遞增(AUTO_INCREMENT) `mer_order`
+--
+ALTER TABLE `mer_order`
+  MODIFY `gID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
