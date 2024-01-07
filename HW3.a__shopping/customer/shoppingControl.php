@@ -3,14 +3,30 @@ require('shoppingModel.php');
 
 $act=$_REQUEST['act'];
 switch ($act) {
+  case "register":
+    $email = $_REQUEST['email'];
+    $password = $_REQUEST['pwd'];
+    $confirm_password = $_REQUEST['confirm_password'];
+    $name = $_REQUEST['name'];
+    // 驗證步驟...
+    $items =register($email, $password, $confirm_password, $name);
+    echo json_encode($items);
+    return;
+  case "blogin":
+    $email = $_REQUEST['email'];
+    $password = $_REQUEST['pwd'];
+    $items=login($email,$password); 
+    echo json_encode($items);
+    return;
   case "checkStatus":
     $id=(int)$_REQUEST['id'];
     $rule=(int)$_REQUEST['rule'];
     checkStatus($id,$rule);
     return;
   case "orderList":
+    $bID=(int)$_REQUEST['bID'];
     $rule=(int)$_REQUEST['rule'];
-    $items=getOrderList($rule);
+    $items=getOrderList($rule,$bID);
     echo json_encode($items);
     return;  
 case "listitem":
@@ -40,14 +56,16 @@ case "delItem":
 	delItem($gID);
 	return;
 case "listJob":
-  $jobs=getJobList();
+  $bID=(int)$_REQUEST['bID'];
+  $jobs=getJobList($bID);
   echo json_encode($jobs);
   return;  
 case "addJob":	
+  $bID=(int)$_REQUEST['bID'];
 	$jsonStr = $_POST['dat'];
 	$job = json_decode($jsonStr);
 	//should verify first
-	addJob($job->name,$job->price,$job->description,$job->id);
+	addJob($job->name,$job->price,$job->description,$job->id,$bID);
 	return;
 case "delJob":
 	$id=(int)$_REQUEST['id']; //$_GET, $_REQUEST

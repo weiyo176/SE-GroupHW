@@ -2,14 +2,64 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script type="text/javascript" src="https://unpkg.com/vue@next"></script>
+    <script type="text/javascript" src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 </head>
 
 <body>
     <hr />
     <div id="main">
+        <div id="cont" v-if="UI=='register'">
+            <h2>商家註冊</h2>
+            <br>
+            <button @click="setLoginUI()">返回</button>
+            <br>
+            <!-- <form > -->
+                <label>
+                    <span>信箱：</span>
+                    <input type="email" v-model="email" name="email" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" required>
+                </label>
+                <br>
+                <label>
+                    <span>密碼：</span>
+                    <input type="password" v-model="password"name="password" id="password" required>
+                    <button type="button" id="passwordToggle" onclick="togglePasswordVisibility()">顯示密碼</button>
+                </label>
+                <br>
+                <label>
+                    <span>確認密碼：</span>
+                    <input type="password" v-model="confirm_password"name="confirm_password" required>
+                </label>
+                <br>
+                <label>
+                    <span>名稱：</span>
+                    <input type="text" v-model="name"name="name" required>
+                </label>
+                <br>
+                <div >
+                    <button type="submit" @click="bregister()">註冊</button>
+                    <button type="reset">重設</button>
+                </div>
+            <!-- </form> -->
+        </div>
+        <div id="cont"  v-if="UI=='login'">
+            <h2>商家登入</h2>
+            <!-- <form > -->
+                <label for="email">帳號:</label>
+                <input type="text" v-model="email" id="email" required>
+                <br>
+                <label for="password">密碼：</label>
+                <input type="password" v-model="password" id="password" required>
+                <br>
+                <input type="submit" value="登入" @click="blogin()">
+                <input type="reset">
+            <!-- </form> -->
+            <button @click="setUI('register')">商家註冊</button>
+            <!-- <p><a href="login1.php" class="home-link">回到首頁</a></p> -->
+        </div>
         <div id="list" v-if="UI=='main'">
             <h1>商家</h1>
+            <br>
+            <button @click="setLoginUI()">登出</button>
             <h2>商品</h2>
             <button @click="setAddUI()">Load Add Form</button>
             <table border=1>
@@ -29,6 +79,7 @@
                 </tr>
             </table>
             <h2>訂單</h2>
+            <button @click="orderList()">Load Order List</button>
             <table border=1>
                 <tr>
                     <td>訂單編號</td>
@@ -47,7 +98,7 @@
                     <td>{{job.total}}</td>
                     <td>{{job.status}}</td>
                     <td>
-                        <button v-if="(index < order.length - 1 && job.oID !== order[index + 1].oID) || index == order.length - 1" @click="checkStatus(job.oID)">額外按鈕</button>
+                        <button v-if="(index < order.length - 1 && job.oID !== order[index + 1].oID) || index == order.length - 1" @click="checkStatus(job.oID)">處理</button>
                     </td>
                 </tr>
                 </tr>
@@ -61,14 +112,32 @@
             商品說明: <textarea v-model="newJob.description"></textarea><br>
 
             <input type='button' @click="addJob()" value="save">
+            <button @click="setUI('main')">Cancel</button>
         </div>
     </div>
 
     <script>
+        function togglePasswordVisibility() {
+            var passwordField = document.getElementById("password");
+            var toggleButton = document.getElementById("passwordToggle");
+
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                toggleButton.textContent = "隱藏密碼";
+            } else {
+                passwordField.type = "password";
+                toggleButton.textContent = "顯示密碼";
+            }
+        }
         const shoppingApp = Vue.createApp({
             data() {
                 return {
-                    UI: 'main',
+                    UI: 'login',
+                    email: '',
+                    password: '',
+                    confirm_password: '',
+                    name: '',
+                    ID:null,
                     dat: [],
                     order: [],
                     newJob: {
@@ -80,9 +149,60 @@
                 }
             },
             methods: {
+                bregister: function () {
+                    console.log('shoppingControl.php?act=register&email=' + this.email + '&password=' + this.password + '&confirm_password=' + this.confirm_password+"&name=" + this.name);
+                    const that = this; //this  ==> stands for vm6. let's save `this` to `that`
+                    let url = "shoppingControl.php?act=register&email=" + this.email + '&pwd=' + this.password + '&confirm_password=' + this.confirm_password+"&name=" + this.name;
+                    // fetch('shoppingControl.php?act=register&email=' + this.email + '&password=' + this.password + '&confirm_password=' + this.confirm_password)
+                    fetch(url, {
+                        method: 'POST'
+                    })
+                        .then(function (response) {
+                            that.email = '';
+                            that.password = '';
+                            return response.json();
+                        })
+                        .then(function (myJson) {
+                            console.log(myJson);
+                            if (myJson) {
+                                that.setUI('login');
+                                console.log("success");
+                            // 註冊成功，進行相應的處理...
+                            } else {
+                                that.setUI('register');
+                            // 註冊失敗，顯示錯誤訊息...
+                            }
+                        });
+                },
+                blogin: function () {
+                    console.log('shoppingControl.php?act=login&email=' + this.email + '&password=' + this.password);
+                    const that = this; //this  ==> stands for vm6. let's save `this` to `that`
+                    let url = "shoppingControl.php?act=blogin&email=" + this.email+"&pwd=" + this.password;
+                    // fetch('shoppingControl.php?act=login&email=' + this.email + '&password=' + this.password)
+                    fetch(url, {
+                        method: 'POST'
+                    })
+                        .then(function (response) {
+                            return response.json();
+                        })
+                        .then(function (myJson) {
+                            if (myJson[0].bID !=0) {
+                                that.ID = myJson[0].bID;
+                                that.setUI('main');
+                                that.loadList();
+                                that.orderList();
+                                console.log(that.ID,myJson[0].bID,"success");
+                            // 登入成功，進行相應的處理...
+                            } else {
+                                that.setUI('login');
+                                that.ID = null;
+                            // 登入失敗，顯示錯誤訊息...
+                            }
+                        });
+                },
                 loadList: function () {
                     const that = this; //this  ==> stands for vm6. let's save `this` to `that`
-                    fetch('shoppingControl.php?act=listJob')
+                    fetch('shoppingControl.php?act=listJob&bID='+this.ID)
                         .then(function (response) {
                             return response.json();
                         })
@@ -96,7 +216,7 @@
                 },
                 orderList: function () {
                     const that = this; //this  ==> stands for vm6. let's save `this` to `that`
-                    fetch('shoppingControl.php?act=orderList&rule=1')
+                    fetch('shoppingControl.php?act=orderList&rule=1&bID='+this.ID)
                         .then(function (response) {
                             return response.json();
                         })
@@ -139,7 +259,7 @@
                     let mydat = new FormData();
                     mydat.append("dat", JSON.stringify(this.newJob));
 
-                    let url = "shoppingControl.php?act=addJob";
+                    let url = "shoppingControl.php?act=addJob&"+'bID='+this.ID;
                     fetch(url, {
                         method: 'POST',
                         body: mydat // 將表單物件放入fetch的body屬性
@@ -166,11 +286,17 @@
                 },
                 setUI: function (page) {
                     this.UI = page;
+                },
+                setLoginUI: function () {
+                    this.ID = null;
+                    this.email = '';
+                    this.password = '';
+                    this.UI = 'login';
                 }
             },
             created() {
-                this.loadList();
-                this.orderList();
+                // this.loadList();
+                // this.orderList();
             }
         }).mount("#main");
     </script>
