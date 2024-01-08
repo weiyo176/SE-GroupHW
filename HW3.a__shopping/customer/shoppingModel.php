@@ -70,13 +70,13 @@ function checkStatus($oID, $rule)
 		$sql = "select * from mer_order where oID=$oID && (status = \"未處理\" or status = \"處理中\");";
 	//if rule=2, select all status=處理中
 	else if ($rule == 2)
-		$sql = "select * from mer_order where oID=$oID && status = \"寄送中\";";
+		$sql = "select * from mer_order where oID=$oID && status = \"已寄送\";";
 	$stmt = mysqli_prepare($db, $sql); //precompile sql指令，建立statement 物件，以便執行SQL
 	mysqli_stmt_execute($stmt); //執行SQL
 	$result = mysqli_stmt_get_result($stmt); //取得查詢結果
 	$status = "處理中";
-	$status2 = "寄送中";
-	$status3 = "已寄送";
+	$status2 = "已寄送";
+	$status3 = "已送達";
 	// 如果status是未處理將資料庫update成處理中，如果是處理中則設成寄送中
 	while ($r = mysqli_fetch_assoc($result)) {
 		if ($r['status'] == "未處理") {
@@ -89,7 +89,7 @@ function checkStatus($oID, $rule)
 			$updateStmt = mysqli_prepare($db, $updateSql);
 			mysqli_stmt_bind_param($updateStmt, "si", $status2, $r['gID']);
 			mysqli_stmt_execute($updateStmt);
-		} else if ($r['status'] == "寄送中") {
+		} else if ($r['status'] == "已寄送") {
 			$updateSql = "UPDATE mer_order SET status = ? WHERE gID = ?";
 			$updateStmt = mysqli_prepare($db, $updateSql);
 			mysqli_stmt_bind_param($updateStmt, "si", $status3, $r['gID']);
@@ -110,7 +110,7 @@ function getOrderList($rule,$bID)
 		mysqli_stmt_bind_param($stmt, "i", $bID);
 	}
 	else if ($rule == 2){
-		$sql = "select * from mer_order where status = \"寄送中\";";
+		$sql = "select * from mer_order where status = \"已寄送\";";
 		$stmt = mysqli_prepare($db, $sql);
 	}
 	// $sql = "select * from customer where status = \"未處理\" or status = \"處理中\";";

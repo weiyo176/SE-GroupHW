@@ -98,13 +98,7 @@
                     <td>{{job.total}}</td>
                     <td>{{job.status}}</td>
                     <td>
-<<<<<<< HEAD
                         <button v-if="(index < order.length - 1 && job.oID !== order[index + 1].oID) || index == order.length - 1" @click="checkStatus(job.oID)">處理</button>
-=======
-                        <button
-                            v-if="(index < order.length - 1 && job.oID !== order[index + 1].oID) || index == order.length - 1"
-                            @click="checkStatus(job.oID)">額外按鈕</button>
->>>>>>> f9313b3 (no message)
                     </td>
                 </tr>
                 </tr>
