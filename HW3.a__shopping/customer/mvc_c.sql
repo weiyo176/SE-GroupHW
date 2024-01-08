@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2024-01-07 13:42:46
+-- 產生時間： 2024-01-08 11:38:40
 -- 伺服器版本： 10.4.28-MariaDB
 -- PHP 版本： 8.2.4
 
@@ -28,18 +28,11 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `business` (
-  `bIID` int(11) NOT NULL,
+  `bID` int(11) NOT NULL,
   `name` varchar(10) NOT NULL,
   `email` varchar(60) NOT NULL,
   `password` varchar(60) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- 傾印資料表的資料 `business`
---
-
-INSERT INTO `business` (`bIID`, `name`, `email`, `password`) VALUES
-(1, 'superman', '123@123', '123');
 
 -- --------------------------------------------------------
 
@@ -87,14 +80,6 @@ CREATE TABLE `items` (
   `price` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- 傾印資料表的資料 `items`
---
-
-INSERT INTO `items` (`bID`, `id`, `name`, `description`, `price`) VALUES
-(1, 1, 'apple', 'aaa', 10),
-(1, 2, 'banana', 'bbb', 20);
-
 -- --------------------------------------------------------
 
 --
@@ -115,18 +100,6 @@ CREATE TABLE `mer_order` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- 傾印資料表的資料 `mer_order`
---
-
-INSERT INTO `mer_order` (`gID`, `id`, `oID`, `cID`, `goods`, `price`, `amount`, `total`, `status`, `rating`) VALUES
-(4, 1, 0, 1, 'apple', 10, 6, 60, '未結帳', NULL),
-(5, 2, 0, 1, 'banana', 20, 5, 100, '未結帳', NULL),
-(6, 1, 0, 1, 'apple', 10, 10, 100, '未結帳', NULL),
-(7, 2, 0, 1, 'banana', 20, 11, 220, '未結帳', NULL),
-(34, 2, 0, 1, 'banana', 20, 1, 20, '已送達', '4'),
-(35, 1, 0, 1, 'apple', 20, 6, 60, '未處理', NULL);
-
---
 -- 已傾印資料表的索引
 --
 
@@ -134,7 +107,7 @@ INSERT INTO `mer_order` (`gID`, `id`, `oID`, `cID`, `goods`, `price`, `amount`, 
 -- 資料表索引 `business`
 --
 ALTER TABLE `business`
-  ADD PRIMARY KEY (`bIID`);
+  ADD PRIMARY KEY (`bID`);
 
 --
 -- 資料表索引 `customer`
@@ -168,13 +141,13 @@ ALTER TABLE `mer_order`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `business`
 --
 ALTER TABLE `business`
-  MODIFY `bIID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `bID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `gID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `gID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `customers`
@@ -186,13 +159,13 @@ ALTER TABLE `customers`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `items`
 --
 ALTER TABLE `items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `mer_order`
 --
 ALTER TABLE `mer_order`
-  MODIFY `gID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `gID` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
