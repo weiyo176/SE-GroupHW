@@ -41,9 +41,10 @@ case "addItem":
     $id = $_POST['id'];  
     $name = $_POST['name'];  
     $price = $_POST['price'];
-	$userID = $_POST['userID']; 	
+	$userID = $_POST['userID'];
+	$bID = $_POST['bID']; 	
     // 驗證步驟...
-    addItem($id, $name, $price, $userID);
+    addItem($id, $name, $price, $userID, $bID);
     return;
 case "minusItem":
     $gID=(int)$_REQUEST['gID']; //$_GET, $_REQUEST

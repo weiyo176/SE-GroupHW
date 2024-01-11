@@ -156,10 +156,10 @@ function getCartList()
 	return $rows;
 }
 
-function addItem($id, $name, $price, $userID)
+function addItem($id, $name, $price, $userID, $bID)
 {
 	global $db;
-	$sql = "select * from customer where id= $id && cID = $userID;";
+	$sql = "select * from customer where tID= $id && cID = $userID;";
 	$stmt = mysqli_prepare($db, $sql); //prepare sql statement
 	mysqli_stmt_execute($stmt);
 	$result = mysqli_stmt_get_result($stmt); //取得查詢結果
@@ -167,15 +167,15 @@ function addItem($id, $name, $price, $userID)
 	if ($row) {
 		$newAmount = $row['amount'] + 1;
 		$newTotal = $newAmount * $row['price'];
-		$updateSql = "UPDATE customer SET amount = ?, total = ? WHERE id = ?";
+		$updateSql = "UPDATE customer SET amount = ?, total = ? WHERE tID = ?";
 		$updateStmt = mysqli_prepare($db, $updateSql);
 		mysqli_stmt_bind_param($updateStmt, "iii", $newAmount, $newTotal, $id);
 		mysqli_stmt_execute($updateStmt);
 	} else {
 		$amount = 1;
-		$sql = "insert into customer (cID,id, goods, price, amount, total) values (?, ?, ?, ?, ?, ?)"; //SQL中的 ? 代表未來要用變數綁定進去的地方
+		$sql = "insert into customer (id, cID,tID, goods, price, amount, total) values (?, ?, ?, ?, ?, ?, ?)"; //SQL中的 ? 代表未來要用變數綁定進去的地方
 		$stmt = mysqli_prepare($db, $sql); //prepare sql statement
-		mysqli_stmt_bind_param($stmt, "iisiii", $userID, $id, $name, $price, $amount, $price); //bind parameters with variables, with types "sss":string, string ,string
+		mysqli_stmt_bind_param($stmt, "iiisiii", $bID, $userID, $id, $name, $price, $amount, $price); //bind parameters with variables, with types "sss":string, string ,string
 		mysqli_stmt_execute($stmt);  //執行SQL
 	}
 	return True;

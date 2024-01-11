@@ -22,7 +22,7 @@
 					<td>{{good.name}}</td>
 					<td>{{good.description}}</td>
 					<td>{{good.price}}</td>
-					<td><button @click="additems(good.id, this.userID)">加入購物車</button></td>
+					<td><button @click="additems(good.id, this.userID, good.bID)">加入購物車</button></td>
 				</tr>
 			</table>
 		</div>
@@ -194,7 +194,7 @@
 							that.loadItem();
 						})
 				},
-				additems: function (id, userID) {
+				additems: function (id, userID, bID) {
 					const that = this; //this  ==> stands for vm6. let's save `this` to `that`
 
 					var selecteditems = this.dat.find(items => items.id === id);// 找到特定id對應的商品數據
@@ -206,6 +206,7 @@
 					formData.append('description', selecteditems.description);
 					formData.append('price', selecteditems.price);
 					formData.append('userID', userID);
+					formData.append('bID', bID);
 
 
 					// 發送 FormData 給後端

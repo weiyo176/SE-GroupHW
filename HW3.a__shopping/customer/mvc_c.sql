@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2024-01-08 11:38:40
+-- 產生時間： 2024-01-11 15:16:20
 -- 伺服器版本： 10.4.28-MariaDB
 -- PHP 版本： 8.2.4
 
@@ -50,7 +50,8 @@ CREATE TABLE `customer` (
   `amount` int(11) NOT NULL,
   `total` int(11) NOT NULL,
   `status` varchar(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '未處理',
-  `rating` varchar(20) DEFAULT NULL
+  `rating` varchar(20) DEFAULT NULL,
+  `tID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -141,25 +142,25 @@ ALTER TABLE `mer_order`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `business`
 --
 ALTER TABLE `business`
-  MODIFY `bID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `bID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `gID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `gID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `cID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `cID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `items`
 --
 ALTER TABLE `items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `mer_order`
